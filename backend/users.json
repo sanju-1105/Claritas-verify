@@ -1,0 +1,23 @@
+[
+  {
+    "email": "devtest@example.com",
+    "fullName": "Dev Test",
+    "position": "QA",
+    "companyName": "Claritas Verify",
+    "registeredAt": "2026-05-17T19:42:54.691497"
+  },
+  {
+    "email": "shyamgupta4310@gmail.com",
+    "fullName": "Shyam Gupta",
+    "position": "HR Manager",
+    "companyName": "Claritas Verify",
+    "registeredAt": "2026-05-17T19:57:54.365803"
+  },
+  {
+    "email": "shyamgupta4310@gmail.com",
+    "fullName": "Shyam Gupta",
+    "position": "HR Manager",
+    "companyName": "Claritas Verify",
+    "registeredAt": "2026-05-17T20:04:16.628909"
+  }
+]

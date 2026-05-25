@@ -191,14 +191,14 @@ export default function Header() {
 
   <a
     href="/#/login"
-    className="block w-full text-center px-4 py-3 rounded-xl border border-slate-200 text-navy-900 font-medium hover:bg-slate-50 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
+    className="block w-full text-center px-4 py-3 rounded-xl border border-slate-200 text-navy-900 font-medium hover:bg-slate-50 transition-all"
   >
     Login
   </a>
 
   <a
     href="/#/register"
-    className="block w-full text-center px-4 py-3 rounded-xl bg-gradient-to-r from-teal-400 via-cyan-500 to-blue-500 text-white font-semibold shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
+    className="block w-full text-center px-4 py-3 rounded-xl bg-gradient-to-r from-teal-400 to-cyan-500 text-white font-semibold shadow-lg shadow-cyan-500/20 transition-all"
   >
     Register
   </a>

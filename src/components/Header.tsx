@@ -99,6 +99,64 @@ export default function Header() {
             ))}
           </nav>
 
+          {/* Desktop Auth Buttons */}
+<div className="hidden lg:flex items-center gap-3">
+
+  {/* Login */}
+  <a
+    href="/#/login"
+    className={`flex items-center gap-2 px-5 py-2.5 rounded-xl border transition-all duration-300 ${
+      isScrolled
+        ? 'border-slate-200 bg-white text-navy-900 hover:bg-slate-50'
+        : 'border-white/10 bg-white/5 text-white hover:bg-white/10'
+    }`}
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-4 h-4"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M15 12H3m0 0l4-4m-4 4l4 4m13-9v10a2 2 0 01-2 2h-6"
+      />
+    </svg>
+
+    <span className="font-medium text-sm">
+      Login
+    </span>
+  </a>
+
+  {/* Register */}
+  <a
+    href="/#/register"
+    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-teal-400 to-cyan-500 hover:from-teal-500 hover:to-cyan-600 text-white font-semibold shadow-lg shadow-cyan-500/20 transition-all duration-300"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-4 h-4"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M18 9v6m3-3h-6m-2 5H6a2 2 0 01-2-2V7a2 2 0 012-2h5"
+      />
+    </svg>
+
+    <span className="text-sm">
+      Register
+    </span>
+  </a>
+
+</div>
           {/* Desktop nav only */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}

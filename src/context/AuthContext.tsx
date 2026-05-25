@@ -1,6 +1,22 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+  sendEmailVerification
+} from "firebase/auth";
+
+import { auth } from "../firebase";
 
 export interface UserProfile {
+  password?: string;
   id: string;
   fullName: string;
   email: string;
@@ -14,176 +30,420 @@ export interface UserProfile {
   location: string;
   linkedin: string;
   joinedDate: string;
-  loginProvider?: 'email' | 'google' | 'linkedin';
+  password?: string;
+  email: string;
+  loginProvider?: "email" | "google" | "linkedin";
 }
 
 interface AuthContextType {
   isAuthenticated: boolean;
   user: UserProfile | null;
-  login: (email: string, password: string, rememberMe: boolean) => Promise<boolean>;
-  socialLogin: (provider: 'google' | 'linkedin', profile: { fullName: string; email: string; avatar?: string }) => Promise<boolean>;
-  logout: () => void;
-  updateProfile: (updates: Partial<UserProfile>) => void;
-  register: (userData: Partial<UserProfile>) => void;
+
+  login: (
+    email: string,
+    password: string,
+    rememberMe: boolean
+  ) => Promise<boolean>;
+
+  socialLogin: (
+    provider: "google" | "linkedin",
+    profile: {
+      fullName: string;
+      email: string;
+      avatar?: string;
+    }
+  ) => Promise<boolean>;
+
+  logout: () => Promise<void>;
+
+  updateProfile: (
+    updates: Partial<UserProfile>
+  ) => void;
+
+  register: (
+    userData: Partial<UserProfile>
+  ) => Promise<boolean>;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext =
+  createContext<AuthContextType | undefined>(
+    undefined
+  );
 
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState<UserProfile | null>(null);
+export function AuthProvider({
+  children,
+}: {
+  children: ReactNode;
+}) {
 
-  // Check for existing session on mount
+  const [isAuthenticated, setIsAuthenticated] =
+    useState(false);
+
+  const [user, setUser] =
+    useState<UserProfile | null>(null);
+
   useEffect(() => {
+
     try {
-      const savedUser = localStorage.getItem('claritas_user');
-      const savedAuth = localStorage.getItem('claritas_auth');
-      if (savedUser && savedAuth === 'true') {
+
+      const savedUser =
+        localStorage.getItem("claritas_user");
+
+      const savedAuth =
+        localStorage.getItem("claritas_auth");
+
+      if (savedUser && savedAuth === "true") {
+
         setUser(JSON.parse(savedUser));
+
         setIsAuthenticated(true);
+
       }
+
     } catch {
-      // Corrupted storage — clear it
-      localStorage.removeItem('claritas_user');
-      localStorage.removeItem('claritas_auth');
+
+      localStorage.removeItem("claritas_user");
+
+      localStorage.removeItem("claritas_auth");
+
     }
+
   }, []);
 
-  const persistUser = (userData: UserProfile, remember: boolean) => {
-    try {
-      const json = JSON.stringify(userData);
-      if (remember) {
-        localStorage.setItem('claritas_user', json);
-        localStorage.setItem('claritas_auth', 'true');
-      } else {
-        sessionStorage.setItem('claritas_user', json);
-        sessionStorage.setItem('claritas_auth', 'true');
-      }
-    } catch {
-      // Storage full or blocked — continue without persistence
+  const persistUser = (
+    userData: UserProfile,
+    remember: boolean
+  ) => {
+
+    const json = JSON.stringify(userData);
+
+    if (remember) {
+
+      localStorage.setItem(
+        "claritas_user",
+        json
+      );
+
+      localStorage.setItem(
+        "claritas_auth",
+        "true"
+      );
+
+    } else {
+
+      sessionStorage.setItem(
+        "claritas_user",
+        json
+      );
+
+      sessionStorage.setItem(
+        "claritas_auth",
+        "true"
+      );
+
     }
   };
 
-  const buildProfile = (overrides: Partial<UserProfile>): UserProfile => ({
+  const buildProfile = (
+    overrides: Partial<UserProfile>
+  ): UserProfile => ({
+
     id: crypto.randomUUID(),
-    fullName: '',
-    email: '',
-    position: 'HR Manager',
-    companyName: '',
-    phone: '',
+
+    fullName: "",
+
+    email: "",
+
+    position: "HR Manager",
+
+    companyName: "",
+
+    phone: "",
+
     avatar: null,
-    bio: '',
-    department: 'Human Resources',
-    employeeId: `CV-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
-    location: 'India',
-    linkedin: '',
+
+    bio: "",
+
+    department: "Human Resources",
+
+    employeeId: `CV-${Math.random()
+      .toString(36)
+      .substring(2, 8)
+      .toUpperCase()}`,
+
+    location: "India",
+
+    linkedin: "",
+
     joinedDate: new Date().toISOString(),
-    loginProvider: 'email',
+
+    loginProvider: "email",
+
     ...overrides,
+
   });
 
-  /* ── Standard email + password login ── */
-  const login = async (email: string, password: string, rememberMe: boolean): Promise<boolean> => {
-    await new Promise((r) => setTimeout(r, 1000));
+  /* LOGIN */
 
-    if (email && password.length === 6) {
-      let userData: UserProfile;
-      try {
-        const saved = localStorage.getItem('claritas_user');
-        if (saved) {
-          userData = { ...JSON.parse(saved), email, loginProvider: 'email' as const };
-        } else {
-          const name = email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
-          userData = buildProfile({ fullName: name, email, loginProvider: 'email' });
-        }
-      } catch {
-        const name = email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
-        userData = buildProfile({ fullName: name, email, loginProvider: 'email' });
-      }
-
-      setUser(userData);
-      setIsAuthenticated(true);
-      persistUser(userData, rememberMe);
-      return true;
-    }
-    return false;
-  };
-
-  /* ── Social (Google / LinkedIn) login ── */
-  const socialLogin = async (
-    provider: 'google' | 'linkedin',
-    profile: { fullName: string; email: string; avatar?: string },
+  const login = async (
+    email: string,
+    password: string,
+    rememberMe: boolean
   ): Promise<boolean> => {
-    await new Promise((r) => setTimeout(r, 800));
 
     try {
-      if (!profile.email) return false;
+
+      const userCredential =
+        await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+
+      const firebaseUser =
+        userCredential.user;
+
+      if (!firebaseUser.emailVerified) {
+
+  alert(
+    "Please verify your email before login."
+  );
+
+  await signOut(auth);
+
+  return false;
+}
 
       const userData = buildProfile({
-        fullName: profile.fullName || profile.email.split('@')[0],
-        email: profile.email,
-        avatar: profile.avatar || null,
-        loginProvider: provider,
-        companyName: provider === 'linkedin' ? 'Via LinkedIn' : '',
+
+        fullName:
+          firebaseUser.email || "",
+
+        email:
+          firebaseUser.email || "",
+
+        loginProvider: "email",
+
       });
 
       setUser(userData);
+
       setIsAuthenticated(true);
-      persistUser(userData, true); // social logins always remembered
+
+      persistUser(
+        userData,
+        rememberMe
+      );
+
       return true;
-    } catch {
+
+    } catch (error) {
+
+      console.log(error);
+
       return false;
+
     }
   };
 
-  const logout = () => {
-    setUser(null);
-    setIsAuthenticated(false);
-    try {
-      localStorage.removeItem('claritas_user');
-      localStorage.removeItem('claritas_auth');
-      sessionStorage.removeItem('claritas_user');
-      sessionStorage.removeItem('claritas_auth');
-    } catch {
-      // ignore
-    }
-  };
+  /* REGISTER */
 
-  const register = (userData: Partial<UserProfile>) => {
+  const register = async (
+  userData: Partial<UserProfile>
+): Promise<boolean> => {
+
+  try {
+
+    const userCredential =
+      await createUserWithEmailAndPassword(
+        auth,
+        userData.email || "",
+        userData.password || ""
+      );
+    await sendEmailVerification(
+  userCredential.user
+);
+
+alert(
+  "Verification email sent. Please check your Gmail."
+);
+
+
+    const firebaseUser =
+      userCredential.user;
+
+    await sendEmailVerification(firebaseUser);
+
+    const newUser = buildProfile({
+
+      fullName:
+        userData.fullName || "",
+
+      email:
+        firebaseUser.email || "",
+
+      position:
+        userData.position || "",
+
+      companyName:
+        userData.companyName || "",
+
+      loginProvider: "email",
+
+    });
+
+    setUser(newUser);
+
+    setIsAuthenticated(true);
+
+    localStorage.setItem(
+      "claritas_user",
+      JSON.stringify(newUser)
+    );
+
+    localStorage.setItem(
+      "claritas_auth",
+      "true"
+    );
+
+    return true;
+
+  } catch (error) {
+
+    console.log(error);
+
+    return false;
+
+  }
+};
+  /* SOCIAL LOGIN */
+
+  const socialLogin = async (
+    provider: "google" | "linkedin",
+    profile: {
+      fullName: string;
+      email: string;
+      avatar?: string;
+    }
+  ): Promise<boolean> => {
+
     try {
-      const newUser = buildProfile(userData);
-      setUser(newUser);
+
+      const userData = buildProfile({
+
+        fullName:
+          profile.fullName,
+
+        email:
+          profile.email,
+
+        avatar:
+          profile.avatar || null,
+
+        loginProvider:
+          provider,
+
+      });
+
+      setUser(userData);
+
       setIsAuthenticated(true);
-      localStorage.setItem('claritas_user', JSON.stringify(newUser));
-      localStorage.setItem('claritas_auth', 'true');
+
+      persistUser(
+        userData,
+        true
+      );
+
+      return true;
+
     } catch {
-      // ignore
+
+      return false;
+
     }
   };
 
-  const updateProfile = (updates: Partial<UserProfile>) => {
+  /* LOGOUT */
+
+  const logout = async () => {
+
+    await signOut(auth);
+
+    setUser(null);
+
+    setIsAuthenticated(false);
+
+    localStorage.removeItem(
+      "claritas_user"
+    );
+
+    localStorage.removeItem(
+      "claritas_auth"
+    );
+
+    sessionStorage.removeItem(
+      "claritas_user"
+    );
+
+    sessionStorage.removeItem(
+      "claritas_auth"
+    );
+  };
+
+  /* UPDATE PROFILE */
+
+  const updateProfile = (
+    updates: Partial<UserProfile>
+  ) => {
+
     if (user) {
-      const updatedUser = { ...user, ...updates };
+
+      const updatedUser = {
+        ...user,
+        ...updates,
+      };
+
       setUser(updatedUser);
-      try {
-        localStorage.setItem('claritas_user', JSON.stringify(updatedUser));
-      } catch {
-        // ignore
-      }
+
+      localStorage.setItem(
+        "claritas_user",
+        JSON.stringify(updatedUser)
+      );
     }
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, login, socialLogin, logout, updateProfile, register }}>
+
+    <AuthContext.Provider
+      value={{
+        isAuthenticated,
+        user,
+        login,
+        socialLogin,
+        logout,
+        updateProfile,
+        register,
+      }}
+    >
+
       {children}
+
     </AuthContext.Provider>
+
   );
 }
 
 export function useAuth() {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+
+  const context =
+    useContext(AuthContext);
+
+  if (!context) {
+
+    throw new Error(
+      "useAuth must be used within AuthProvider"
+    );
   }
+
   return context;
 }

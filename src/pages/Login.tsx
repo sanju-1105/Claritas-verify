@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { otpService } from '../config/api';
+import { otpService } from '../services/otpService';
 import {
   ShieldCheck,
   Mail,
@@ -446,7 +446,7 @@ function SocialLoginModal({ provider, onClose, onSuccess }: SocialModalProps) {
    ═══════════════════════════════════ */
 export default function Login() {
   const navigate = useNavigate();
-  const { login, socialLogin, isAuthenticated } = useAuth();
+  const { login, isAuthenticated, socialLogin } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -591,26 +591,29 @@ export default function Login() {
           </div>
 
           {/* ── Social Login Buttons ── */}
-          <div className="space-y-3 mb-6">
-            <button
-              type="button"
-              onClick={() => { setLoginError(''); setSocialModal('google'); }}
-              disabled={isLoading}
-              className="w-full flex items-center justify-center gap-3 px-4 py-3.5 rounded-xl border border-slate-200 bg-white text-slate-700 font-medium text-sm hover:bg-slate-50 hover:border-slate-300 hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-            >
-              <GoogleIcon className="w-5 h-5" />
-              Continue with Google
-            </button>
-            <button
-              type="button"
-              onClick={() => { setLoginError(''); setSocialModal('linkedin'); }}
-              disabled={isLoading}
-              className="w-full flex items-center justify-center gap-3 px-4 py-3.5 rounded-xl bg-[#0A66C2] text-white font-medium text-sm hover:bg-[#004182] hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-            >
-              <LinkedInIcon className="w-5 h-5" />
-              Continue with LinkedIn
-            </button>
-          </div>
+<div className="space-y-3 mb-6">
+
+  {/* Google Disabled */}
+  <button
+    type="button"
+    disabled
+    className="w-full flex items-center justify-center gap-3 px-4 py-3.5 rounded-xl border border-slate-200 bg-gray-100 text-slate-400 font-medium text-sm cursor-not-allowed"
+  >
+    <GoogleIcon className="w-5 h-5" />
+    Google Login Coming Soon
+  </button>
+
+  {/* LinkedIn Disabled */}
+  <button
+    type="button"
+    disabled
+    className="w-full flex items-center justify-center gap-3 px-4 py-3.5 rounded-xl bg-gray-300 text-white font-medium text-sm cursor-not-allowed"
+  >
+    <LinkedInIcon className="w-5 h-5" />
+    LinkedIn Login Coming Soon
+  </button>
+
+</div>
 
           {/* Divider */}
           <div className="relative my-6">

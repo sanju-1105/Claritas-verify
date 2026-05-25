@@ -106,11 +106,10 @@ export default function Register() {
       newErrors.email = 'Please enter a valid email address';
     }
 
-    if (!formData.password) {
+    if (!formData.password) 
       newErrors.password = 'Password is required';
-    } else if (!/^\d{6}$/.test(formData.password)) {
-      newErrors.password = 'Password must be exactly 6 digits';
-    }
+      else if (formData.password.length < 6)
+      newErrors.password = 'Password must be at least 6 characters';
 
     if (!formData.confirmPassword) {
       newErrors.confirmPassword = 'Please confirm your password';
@@ -223,9 +222,10 @@ export default function Register() {
         register({
           fullName: formData.fullName,
           email: formData.email,
+          password: formData.password,
           position: formData.position,
           companyName: formData.companyName,
-        });
+          });
 
         // Clear verification record on backend
         await otpService.clearVerification(formData.email);

@@ -10,6 +10,8 @@ import Login from './pages/Login';
 
 import Register from './pages/Register';
 
+import Dashboard from './pages/Dashboard';
+
 export default function App() {
 
 
@@ -37,6 +39,7 @@ export default function App() {
             path="/forgot-password"
             element={<ForgotPassword />}
           />
+          <Route path="/dashboard" element={<Dashboard />} />
 
         </Routes>
 

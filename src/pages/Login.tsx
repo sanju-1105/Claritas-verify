@@ -459,7 +459,7 @@ export default function Login() {
   const [socialModal, setSocialModal] = useState<SocialProvider | null>(null);
 
   useEffect(() => {
-    if (isAuthenticated) navigate('/');
+    if (isAuthenticated) navigate('/dashboard');
   }, [isAuthenticated, navigate]);
 
   const validateForm = () => {

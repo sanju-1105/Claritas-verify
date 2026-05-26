@@ -187,21 +187,21 @@ export default function Header() {
               }`}
             >
               {link.label}
-              <div className="pt-4 mt-4 border-t border-slate-200 space-y-3">
+              <div className="pt-3 mt-3 border-t border-slate-200 flex gap-2">
 
   <a
-    href="/#/login"
-    className="block w-full text-center px-4 py-3 rounded-xl border border-slate-200 text-navy-900 font-medium hover:bg-slate-50 transition-all"
-  >
-    Login
-  </a>
+  href="/#/login"
+  className="flex-1 text-center px-3 py-2 rounded-lg border border-slate-200 text-navy-900 text-sm font-medium hover:bg-slate-50 transition-all"
+>
+  Login
+</a>
 
   <a
-    href="/#/register"
-    className="block w-full text-center px-4 py-3 rounded-xl bg-gradient-to-r from-teal-400 to-cyan-500 text-white font-semibold shadow-lg shadow-cyan-500/20 transition-all"
-  >
-    Register
-  </a>
+  href="/#/register"
+  className="flex-1 text-center px-3 py-2 rounded-lg bg-gradient-to-r from-teal-400 to-cyan-500 text-white text-sm font-semibold shadow-md shadow-cyan-500/20 transition-all"
+>
+  Register
+</a>
 
 </div>
             </button>

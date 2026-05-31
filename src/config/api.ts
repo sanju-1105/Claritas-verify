@@ -1,7 +1,6 @@
-const API_URL = import.meta.env.VITE_API_URL || 'https://claritas-verify-api.onrender.com';
+const API_URL = import.meta.env.VITE_API_URL || 'https://claritas-verify.onrender.com';
 
 export const otpService = {
-
   sendOtp: async (email: string) => {
     const res = await fetch(`${API_URL}/api/send-otp`, {
       method: 'POST',
@@ -21,7 +20,6 @@ export const otpService = {
   },
 
   registerUser: async (email: string, fullName: string, position: string, companyName: string) => {
-    // localStorage mein save karo (ya Firebase mein)
     const users = JSON.parse(localStorage.getItem('users') || '[]');
     users.push({ email, fullName, position, companyName });
     localStorage.setItem('users', JSON.stringify(users));

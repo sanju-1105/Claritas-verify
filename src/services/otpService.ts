@@ -1,3 +1,5 @@
+const API_URL = import.meta.env.VITE_API_URL || 'https://claritas-verify-api.onrender.com';
+
 interface SendOtpResponse {
   success: boolean;
   expiresIn: number;
@@ -14,46 +16,40 @@ interface VerifyOtpResponse {
 export const otpService = {
 
   async sendOtp(email: string): Promise<SendOtpResponse> {
-
-    console.log("Sending OTP to:", email);
-
+    const res = await fetch(`${API_URL}/api/send-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+    const data = await res.json();
     return {
-      success: true,
-      expiresIn: 300,
-      cooldown: 60,
-      message: "OTP sent successfully",
+      success: data.success ?? false,
+      expiresIn: data.expires_in ?? 300,
+      cooldown: data.cooldown ?? 60,
+      message: data.message ?? '',
     };
   },
 
-  async verifyOtp(
-    email: string,
-    code: string
-  ): Promise<VerifyOtpResponse> {
-
-    console.log("Verifying OTP:", email, code);
-
-    // Demo OTP = 123456
-    if (code === "123456") {
-
-      return {
-        success: true,
-        verified: true,
-      };
-    }
-
+  async verifyOtp(email: string, code: string): Promise<VerifyOtpResponse> {
+    const res = await fetch(`${API_URL}/api/verify-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, otp: code }),
+    });
+    const data = await res.json();
     return {
-      success: false,
-      verified: false,
-      message: "Invalid OTP",
+      success: data.success ?? false,
+      verified: data.verified ?? false,
+      message: data.message,
     };
   },
 
   async clearVerification(email: string) {
-
-    console.log("Verification cleared:", email);
-
-    return {
-      success: true,
-    };
+    await fetch(`${API_URL}/api/clear-verification`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+    return { success: true };
   },
 };

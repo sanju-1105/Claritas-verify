@@ -1,26 +1,21 @@
-# Render Blueprint for Claritas Verify OTP Backend
-# https://render.com/docs/blueprint-spec
-
 services:
   - type: web
     name: claritas-verify-api
     env: python
-    region: singapore  # Choose closest to India
+    region: singapore
     plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
+    startCommand: gunicorn --bind 0.0.0.0:$PORT --workers 1 app:app
     envVars:
       - key: FLASK_ENV
         value: production
-      - key: SMTP_SERVER
-        value: smtp.gmail.com
-      - key: SMTP_PORT
-        value: 587
-      - key: SMTP_EMAIL
-        sync: false  # Will prompt for value during deploy
-      - key: SMTP_PASSWORD
-        sync: false  # Will prompt for value during deploy
+      - key: EMAIL
+        sync: false
+      - key: APP_PASSWORD
+        sync: false
       - key: SENDER_NAME
         value: Claritas Verify
       - key: FRONTEND_URL
-        sync: false  # Set to your Netlify URL
+        value: https://claritasverify.netlify.app
+      - key: DEV_EMAIL_BACKUP
+        value: false

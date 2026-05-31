@@ -1,15 +1,5 @@
-# Claritas Verify OTP Backend Dependencies
-
-# Web framework
 Flask==3.0.0
 flask-cors==4.0.0
-
-# Environment variables
 python-dotenv==1.0.0
-
-# Production WSGI server
 gunicorn==21.2.0
-
-# Email validation (optional - using regex instead)
-# email-validator==2.1.0
-# Optional: yagmail (not required). Install manually if you need it.
+yagmail==0.15.293

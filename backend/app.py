@@ -10,9 +10,6 @@ import logging
 import json
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-try:
-    import yagmail
-except Exception:
     yagmail = None
 from functools import wraps
 from datetime import datetime

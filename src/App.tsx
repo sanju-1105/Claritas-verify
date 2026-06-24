@@ -12,6 +12,10 @@ import Register from './pages/Register';
 
 import Dashboard from './pages/Dashboard';
 
+import VerificationRequest from './pages/VerificationRequest';
+
+import TrackVerification from './pages/TrackVerification';
+
 export default function App() {
 
 
@@ -41,6 +45,16 @@ export default function App() {
           />
           <Route path="/dashboard" element={<Dashboard />} />
 
+          <Route
+  path="/verification-request"
+  element={<VerificationRequest />}
+/>
+
+<Route
+  path="/track-verification"
+  element={<TrackVerification />}
+/>
+
         </Routes>
 
       </HashRouter>
@@ -49,3 +63,4 @@ export default function App() {
 
   );
 }
+

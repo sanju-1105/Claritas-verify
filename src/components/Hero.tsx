@@ -1,4 +1,4 @@
-import { ArrowRight, Play, Shield, CheckCircle2, Users, Zap } from 'lucide-react';
+import { ArrowRight, Search, Shield, CheckCircle2, Users, Zap } from 'lucide-react';
 
 export default function Hero() {
   return (
@@ -51,22 +51,23 @@ export default function Hero() {
             </div>
 
             {/* CTA Buttons */}
-            <div className="animate-fade-in-up animation-delay-400 flex flex-col sm:flex-row gap-4">
-              <button
-                onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-                className="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-teal-500 hover:bg-teal-400 text-navy-950 font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-teal-500/25 hover:shadow-teal-400/40 hover:-translate-y-0.5 cursor-pointer"
-              >
-                Get Started
-                <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
-              </button>
-              <button
-                onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-                className="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/5 hover:bg-white/10 text-white font-semibold rounded-xl border border-white/10 hover:border-white/20 transition-all duration-300 backdrop-blur-sm cursor-pointer"
-              >
-                <Play className="w-4 h-4" />
-                Book a Demo
-              </button>
-            </div>
+<div className="animate-fade-in-up animation-delay-400 flex flex-col sm:flex-row gap-4">
+  <button
+    onClick={() => window.location.hash = "#/verification-request"}
+    className="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-teal-500 hover:bg-teal-400 text-navy-950 font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-teal-500/25 hover:shadow-teal-400/40 hover:-translate-y-0.5 cursor-pointer"
+  >
+    Verification Request
+    <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+  </button>
+
+  <button
+    onClick={() => window.location.hash = "#/track-verification"}
+    className="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/5 hover:bg-white/10 text-white font-semibold rounded-xl border border-white/10 hover:border-white/20 transition-all duration-300 backdrop-blur-sm cursor-pointer"
+  >
+    <Search className="w-4 h-4" />
+    Track Verification
+  </button>
+</div>
 
             {/* Stats */}
             <div className="animate-fade-in-up animation-delay-600 grid grid-cols-3 gap-6 pt-4 border-t border-white/10">
